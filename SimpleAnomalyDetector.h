@@ -35,7 +35,7 @@ public:
 	}
 
     virtual void addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vec);
-    virtual int isAnomaly(Point p, correlatedFeatures c);
+    virtual bool isAnomaly(Point p, correlatedFeatures c);
     vector<Point> sharedPoints(vector<float> vec1, vector<float> vec2);
 
 

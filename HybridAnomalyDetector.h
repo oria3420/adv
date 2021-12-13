@@ -11,7 +11,7 @@ public:
 	HybridAnomalyDetector();
 	virtual ~HybridAnomalyDetector();
     virtual void addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints);
-    virtual int isAnomaly(Point p, correlatedFeatures c);
+    virtual bool isAnomaly(Point p, correlatedFeatures c);
 
 };
 

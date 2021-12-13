@@ -90,11 +90,11 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
     return arVec;
 }
 
-int SimpleAnomalyDetector:: isAnomaly(Point p, correlatedFeatures c){
+bool SimpleAnomalyDetector:: isAnomaly(Point p, correlatedFeatures c){
     float devNum = dev(p, c.lin_reg);
     if ( devNum > c.threshold) {
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 

@@ -36,18 +36,12 @@ void HybridAnomalyDetector:: addCorrelatedFeatures(const TimeSeries &ts, long i,
     }
 }
 
-int HybridAnomalyDetector::isAnomaly(Point p, correlatedFeatures c) {
-    bool isAnomalySimple = SimpleAnomalyDetector::isAnomaly(p,c);
-    if(isAnomalySimple && c.threshold>=0.9){
-        return 1;
+bool HybridAnomalyDetector::isAnomaly(Point p, correlatedFeatures c) {
+    if(c.threshold>=0.9 && SimpleAnomalyDetector::isAnomaly(p,c)){
+        return true;
     }
-    bool isAnomalyHybrid;
-    float dis = distance(p, Point(c.centerX, c.centerY));
-    if ( dis > c.threshold) {
-        isAnomalyHybrid = true;
+    else if ( c.threshold>0.5 && c.threshold<0.9 && distance(p, Point(c.centerX, c.centerY)) > c.threshold) {
+        return true;
     }
-    else if(isAnomalyHybrid && c.threshold>0.5 && c.threshold<0.9){
-        return 1;
-    }
-    return 0;
+    return false;
 }
