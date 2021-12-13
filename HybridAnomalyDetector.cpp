@@ -9,11 +9,20 @@ HybridAnomalyDetector::~HybridAnomalyDetector() {
 
 }
 
+Point** vecToArray(vector<Point> vec){
+    int numOfVals = vec.size();
+    Point** arr =new Point*[vec.size()];
+    for(int i=0;i<numOfVals;i++){
+        arr[i]=new Point(vec[i].x,vec[i].y);
+    }
+    return arr;
+}
+
 void HybridAnomalyDetector:: addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints){
     SimpleAnomalyDetector::addCorrelatedFeatures(ts,i,c,m, vecPoints);
     if(m>0.5 && m<0.9){
-        Point* arrPoints = &vecPoints[0];
-        Circle circle = findMinCircle(&arrPoints, vecPoints.size());
+        Point** arrPoints = vecToArray(vecPoints);
+        Circle circle = findMinCircle(arrPoints, vecPoints.size());
         float cX = circle.center.x;
         float cY = circle.center.y;
         correlatedFeatures corrf;

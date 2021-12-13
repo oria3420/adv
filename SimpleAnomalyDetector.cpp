@@ -24,7 +24,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     long numOfVal = ts.getNumOfVals();
     for (long i = 0; i < numOfFeatures; i++) {
         float m = 0.9;
-        long c = -1;
+        long c = 0;
         for (long j = i + 1; j < numOfFeatures; j++) {
             vector<float> v1 = ts.getValVector(i);
             vector<float> v2 = ts.getValVector(j);
@@ -36,6 +36,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
                 c = j;
             }
         }
+        int x=0;
         vector<Point> vecPoints = sharedPoints(ts.getValVector(i), ts.getValVector(c));
         addCorrelatedFeatures(ts, i, c, m, vecPoints);
     }
@@ -53,7 +54,7 @@ vector<Point> SimpleAnomalyDetector:: sharedPoints(vector<float> vec1, vector<fl
 }
 
 void SimpleAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints) {
-    if(c!=-1){
+    if(m>0.9){
         long numOfPoints = vecPoints.size();
         float threshold = 0;
         Line line = linear_reg(vecPoints, numOfPoints);
