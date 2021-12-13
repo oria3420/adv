@@ -10,7 +10,7 @@
 #include "AnomalyDetector.h"
 
 SimpleAnomalyDetector::SimpleAnomalyDetector() {
-
+// bla
 
 }
 
