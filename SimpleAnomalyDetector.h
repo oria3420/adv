@@ -9,15 +9,19 @@
 #include <algorithm>
 #include <cstring>
 #include <cmath>
+#include "minCircle.h"
 
 struct correlatedFeatures{
 	string feature1,feature2;  // names of the correlated features
 	float corrlation;
 	Line lin_reg;
 	float threshold;
+    float centerX;
+    float centerY;
 };
 
 class SimpleAnomalyDetector:public TimeSeriesAnomalyDetector{
+protected:
 	vector<correlatedFeatures> cf;
 public:
 	SimpleAnomalyDetector();
@@ -30,7 +34,8 @@ public:
 		return cf;
 	}
 
-    void addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m);
+    virtual void addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vec);
+    vector<Point> sharedPoints(vector<float> vec1, vector<float> vec2);
 
 
 };

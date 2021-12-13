@@ -24,12 +24,7 @@ public:
 
 Circle findMinCircle(Point **points, size_t size);
 
-// you can add here additional methods
-vector<Point> arrayToVec(Point **points, int size);
-
-Circle welzl(vector<Point> &P, vector<Point> R, size_t size);
-
-Circle welzl(vector<Point> P);
+Circle welzl(Point **points, vector<Point> R, size_t size);
 
 bool inCircle(Circle circle, Point point);
 

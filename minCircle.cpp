@@ -17,19 +17,18 @@ float distance(Point p1, Point p2) {
 }
 
 Circle findMinCircle(Point **points, size_t size) {
-    vector<Point> P = arrayToVec(points, size);
     vector<Point> R;
-    return welzl(P, R, size);
+    return welzl(points, R, size);
 }
 
-Circle welzl(vector<Point> &P, vector<Point> R, size_t size) {
+Circle welzl(Point **P, vector<Point> R, size_t size) {
     if (size == 0 || R.size() == 3) {
         Circle circle = trivialCircle(R);
         return circle;
     }
     int i = rand() % size;
-    Point p = P.at(i);
-    swap(P.at(i), P.at(size - 1));
+    Point p = Point(P[i]->x, P[i]->y);
+    swap(P[i], P[size - 1]);
     // P.erase(P.begin() + i);
     Circle d = welzl(P, R, size - 1);
     if (inCircle(d, p)) {
@@ -81,15 +80,4 @@ Point centerFromPoints(Point p1, Point p2, Point p3) {
     float xPoint = (cy * B - by * C) / (2 * D);
     float yPoint = (bx * C - cx * B) / (2 * D);
     return Point(xPoint, yPoint);
-}
-
-vector<Point> arrayToVec(Point **points, int size) {
-    vector<Point> pointsVec;
-    for (int i = 0; i < size; i++) {
-        float x = points[i]->x;
-        float y = points[i]->y;
-        Point p = Point(x, y);
-        pointsVec.push_back(p);
-    }
-    return pointsVec;
 }

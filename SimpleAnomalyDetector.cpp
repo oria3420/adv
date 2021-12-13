@@ -11,7 +11,6 @@
 
 SimpleAnomalyDetector::SimpleAnomalyDetector() {
 
-
 }
 
 SimpleAnomalyDetector::~SimpleAnomalyDetector() {
@@ -37,13 +36,12 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
                 c = j;
             }
         }
-        if (c != -1) {
-            addCorrelatedFeatures(ts, i, c, m);
-        }
+        vector<Point> vecPoints = sharedPoints(ts.getValVector(i), ts.getValVector(c));
+        addCorrelatedFeatures(ts, i, c, m, vecPoints);
     }
 }
 
-vector<Point> sharedPoints(vector<float> vec1, vector<float> vec2) {
+vector<Point> SimpleAnomalyDetector:: sharedPoints(vector<float> vec1, vector<float> vec2) {
     vector<Point> vecPoints;
     for (long i = 0; i < vec1.size(); i++) {
         float x = vec1.at(i);
@@ -54,22 +52,22 @@ vector<Point> sharedPoints(vector<float> vec1, vector<float> vec2) {
     return vecPoints;
 }
 
-void SimpleAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m) {
-    //make a vector with points(x,y)- x=val of i,y=val of c
-    vector<Point> vecPoints = sharedPoints(ts.getValVector(i), ts.getValVector(c));
-    long numOfPoints = vecPoints.size();
-    float threshold = 0;
-    Line line = linear_reg(vecPoints, numOfPoints);
-    for (long j = 0; j < numOfPoints; j++) {
-        Point p = Point(vecPoints.at(j).x, vecPoints.at(j).y);
-        float tempReg = dev(p, line);
-        if (tempReg > threshold) {
-            threshold = tempReg;
+void SimpleAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints) {
+    if(c!=-1){
+        long numOfPoints = vecPoints.size();
+        float threshold = 0;
+        Line line = linear_reg(vecPoints, numOfPoints);
+        for (long j = 0; j < numOfPoints; j++) {
+            Point p = Point(vecPoints.at(j).x, vecPoints.at(j).y);
+            float tempReg = dev(p, line);
+            if (tempReg > threshold) {
+                threshold = tempReg;
+            }
         }
+        threshold = threshold * 1.1;
+        correlatedFeatures corrf = {ts.getFeature(i), ts.getFeature(c), m, line, threshold};
+        this->cf.push_back(corrf);
     }
-    threshold = threshold * 1.1;
-    correlatedFeatures corrf = {ts.getFeature(i), ts.getFeature(c), m, line, threshold};
-    this->cf.push_back(corrf);
 }
 
 vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
