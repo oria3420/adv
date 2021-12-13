@@ -78,16 +78,22 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
         vector<float> vf1 = ts.getValVector(feature1);
         vector<float> vf2 = ts.getValVector(feature2);
         vector<Point> vecPoints = sharedPoints(vf1, vf2);
-        Line line = c.lin_reg;
         for (long i = 0; i < vf1.size(); i++) {
             Point p = Point(vecPoints.at(i).x,vecPoints.at(i).y);
-            float devNum = dev(p, line);
-            if ( devNum > c.threshold) {
+            if (isAnomaly(p,c)) {
                 AnomalyReport ar = AnomalyReport(feature1 + "-" + feature2, i+1);
                 arVec.push_back(ar);
             }
         }
     }
     return arVec;
+}
+
+int SimpleAnomalyDetector:: isAnomaly(Point p, correlatedFeatures c){
+    float devNum = dev(p, c.lin_reg);
+    if ( devNum > c.threshold) {
+        return 1;
+    }
+    return 0;
 }
 
