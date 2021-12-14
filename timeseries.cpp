@@ -7,6 +7,7 @@
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "readability-string-compare"
+
 #include "timeseries.h"
 #include <string>
 #include <fstream>
@@ -25,18 +26,18 @@ vector<float> TimeSeries::getValVector(long i) const {
 }
 
 vector<float> TimeSeries::getValVector(string feature) const {
-    vector<string> featuresArray = getFeatureArray();
-    for(long i=0; i<featuresArray.size();i++){
-        if(featuresArray.at(i)==(feature)){
+    vector <string> featuresArray = getFeatureArray();
+    for (long i = 0; i < featuresArray.size(); i++) {
+        if (featuresArray.at(i) == (feature)) {
             return dataBase.at(i).second;
         }
     }
 }
 
-vector<string> TimeSeries::getFeatureArray() const{
-    vector<string> featuresArray;
-    for(long i=0; i<this->dataBase.size();i++){
-        string f =this->dataBase.at(i).first;
+vector <string> TimeSeries::getFeatureArray() const {
+    vector <string> featuresArray;
+    for (long i = 0; i < this->dataBase.size(); i++) {
+        string f = this->dataBase.at(i).first;
         featuresArray.push_back(f);
     }
     return featuresArray;
@@ -53,28 +54,30 @@ string TimeSeries::getFeature(long i) const {
     return this->dataBase.at(i).first;
 }
 
-vector<pair<string, vector<float>>> TimeSeries::createDataBase(){
-    vector<pair<string, vector<float>>> dataBase;
-   ifstream myFile(this->CSVfileName);
-    if(!myFile.is_open()){
+vector <pair<string, vector < float>>>
+
+TimeSeries::createDataBase() {
+    vector < pair < string, vector < float>>> dataBase;
+    ifstream myFile(this->CSVfileName);
+    if (!myFile.is_open()) {
         throw runtime_error("");
     }
     string line;
     string feature;
     float val;
-    if(myFile.good()){
+    if (myFile.good()) {
         getline(myFile, line);
         stringstream ss(line);
-        while(getline(ss, feature, ',')){
-            dataBase.push_back({feature, vector<float> {}});
+        while (getline(ss, feature, ',')) {
+            dataBase.push_back({feature, vector < float > {}});
         }
     }
-    while(getline(myFile, line)){
+    while (getline(myFile, line)) {
         stringstream ss(line);
         long colIdx = 0;
-        while(ss >> val){
+        while (ss >> val) {
             dataBase.at(colIdx).second.push_back(val);
-            if(ss.peek() == ','){
+            if (ss.peek() == ',') {
                 ss.ignore();
             }
             colIdx++;
@@ -83,10 +86,6 @@ vector<pair<string, vector<float>>> TimeSeries::createDataBase(){
     myFile.close();
     return dataBase;
 }
-
-
-
-
 
 
 #pragma clang diagnostic pop

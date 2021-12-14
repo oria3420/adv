@@ -6,11 +6,14 @@
 #include "SimpleAnomalyDetector.h"
 #include "minCircle.h"
 
-class HybridAnomalyDetector:public SimpleAnomalyDetector {
+class HybridAnomalyDetector : public SimpleAnomalyDetector {
 public:
-	HybridAnomalyDetector();
-	virtual ~HybridAnomalyDetector();
+    HybridAnomalyDetector();
+
+    virtual ~HybridAnomalyDetector();
+
     virtual void addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints);
+
     virtual bool isAnomaly(Point p, correlatedFeatures c);
 
 };

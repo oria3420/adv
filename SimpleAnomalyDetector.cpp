@@ -23,38 +23,38 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     //number of rows
     long numOfVal = ts.getNumOfVals();
     for (long i = 0; i < numOfFeatures; i++) {
-        float m = 0.9;
+        float m = 0;
         long c = 0;
         for (long j = i + 1; j < numOfFeatures; j++) {
             vector<float> v1 = ts.getValVector(i);
             vector<float> v2 = ts.getValVector(j);
-            float * a1  = v1.data();
-            float * a2 = v2.data();
+            float *a1 = v1.data();
+            float *a2 = v2.data();
             float p = abs(pearson(a1, a2, numOfVal));
             if (p > m) {
                 m = p;
                 c = j;
             }
         }
-        int x=0;
         vector<Point> vecPoints = sharedPoints(ts.getValVector(i), ts.getValVector(c));
         addCorrelatedFeatures(ts, i, c, m, vecPoints);
     }
 }
 
-vector<Point> SimpleAnomalyDetector:: sharedPoints(vector<float> vec1, vector<float> vec2) {
+vector<Point> SimpleAnomalyDetector::sharedPoints(vector<float> vec1, vector<float> vec2) {
     vector<Point> vecPoints;
     for (long i = 0; i < vec1.size(); i++) {
         float x = vec1.at(i);
         float y = vec2.at(i);
-        Point p= Point(x,y);
+        Point p = Point(x, y);
         vecPoints.push_back(p);
     }
     return vecPoints;
 }
 
-void SimpleAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints) {
-    if(m>0.9){
+void
+SimpleAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints) {
+    if (m > 0.9) {
         long numOfPoints = vecPoints.size();
         float threshold = 0;
         Line line = linear_reg(vecPoints, numOfPoints);
@@ -80,9 +80,9 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
         vector<float> vf2 = ts.getValVector(feature2);
         vector<Point> vecPoints = sharedPoints(vf1, vf2);
         for (long i = 0; i < vf1.size(); i++) {
-            Point p = Point(vecPoints.at(i).x,vecPoints.at(i).y);
-            if (isAnomaly(p,c)) {
-                AnomalyReport ar = AnomalyReport(feature1 + "-" + feature2, i+1);
+            Point p = Point(vecPoints.at(i).x, vecPoints.at(i).y);
+            if (isAnomaly(p, c)) {
+                AnomalyReport ar = AnomalyReport(feature1 + "-" + feature2, i + 1);
                 arVec.push_back(ar);
             }
         }
@@ -90,9 +90,9 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
     return arVec;
 }
 
-bool SimpleAnomalyDetector:: isAnomaly(Point p, correlatedFeatures c){
+bool SimpleAnomalyDetector::isAnomaly(Point p, correlatedFeatures c) {
     float devNum = dev(p, c.lin_reg);
-    if ( devNum > c.threshold) {
+    if (devNum > c.threshold) {
         return true;
     }
     return false;
