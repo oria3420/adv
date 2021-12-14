@@ -15,7 +15,6 @@
 #include <utility> // std::pair
 #include <stdexcept> // std::runtime_error
 #include <sstream> // std::stringstream
-#include <algorithm>
 
 long TimeSeries::getNumOfFeatures() const {
     return this->dataBase.size();

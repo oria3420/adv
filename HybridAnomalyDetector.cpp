@@ -38,8 +38,8 @@ HybridAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long 
         corrf.centerX = circle.center.x;
         corrf.centerY = circle.center.y;
         this->cf.push_back(corrf);
-        for (long i = 0; i < vecPoints.size(); i++) {
-            delete arrPoints[i];
+        for (long j = 0; j < vecPoints.size(); j++) {
+            delete arrPoints[j];
         }
         delete[] arrPoints;
     }
