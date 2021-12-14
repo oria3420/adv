@@ -66,7 +66,9 @@ SimpleAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long 
             }
         }
         threshold = threshold * 1.1;
-        correlatedFeatures corrf = {ts.getFeature(i), ts.getFeature(c), m, line, threshold};
+        string feature1 = ts.getFeature(i);
+        string feature2 = ts.getFeature(c);
+        correlatedFeatures corrf = {feature1, feature2, m, line, threshold};
         this->cf.push_back(corrf);
     }
 }

@@ -1,3 +1,9 @@
+/*
+ * HybridAnomalyDetector.cpp
+ *
+ * Author: Shira Taitelbaum, ID: 322207341
+ *         Oriya Yehudai, ID: 211544150
+ */
 
 #include "HybridAnomalyDetector.h"
 
@@ -32,13 +38,18 @@ HybridAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long 
         corrf.centerX = circle.center.x;
         corrf.centerY = circle.center.y;
         this->cf.push_back(corrf);
+        for (long i = 0; i < vecPoints.size(); i++) {
+            delete arrPoints[i];
+        }
+        delete[] arrPoints;
     }
 }
 
 bool HybridAnomalyDetector::isAnomaly(Point p, correlatedFeatures c) {
+    Point center = Point(c.centerX, c.centerY);
     if (c.corrlation >= 0.9 && SimpleAnomalyDetector::isAnomaly(p, c)) {
         return true;
-    } else if (c.corrlation > 0.5 && c.corrlation < 0.9 && distance(p, Point(c.centerX, c.centerY)) > c.threshold) {
+    } else if (c.corrlation > 0.5 && c.corrlation < 0.9 && distance(p, center) > c.threshold) {
         return true;
     }
     return false;
