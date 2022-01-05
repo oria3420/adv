@@ -9,10 +9,6 @@
 #include "anomaly_detection_util.h"
 #include "AnomalyDetector.h"
 
-SimpleAnomalyDetector::SimpleAnomalyDetector() {
-
-}
-
 SimpleAnomalyDetector::~SimpleAnomalyDetector() {
 
 }
@@ -54,7 +50,7 @@ vector<Point> SimpleAnomalyDetector::sharedPoints(vector<float> vec1, vector<flo
 
 void
 SimpleAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints) {
-    if (m > 0.9) {
+    if (m > threshold) {
         long numOfPoints = vecPoints.size();
         float threshold = 0;
         Line line = linear_reg(vecPoints, numOfPoints);

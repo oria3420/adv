@@ -23,8 +23,9 @@ struct correlatedFeatures {
 class SimpleAnomalyDetector : public TimeSeriesAnomalyDetector {
 protected:
     vector<correlatedFeatures> cf;
+    float threshold;
 public:
-    SimpleAnomalyDetector();
+    SimpleAnomalyDetector(float threshold): threshold(threshold){}
 
     virtual ~SimpleAnomalyDetector();
 

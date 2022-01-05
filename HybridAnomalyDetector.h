@@ -8,7 +8,7 @@
 
 class HybridAnomalyDetector : public SimpleAnomalyDetector {
 public:
-    HybridAnomalyDetector();
+    HybridAnomalyDetector(float threshold): SimpleAnomalyDetector(threshold){}
 
     virtual ~HybridAnomalyDetector();
 

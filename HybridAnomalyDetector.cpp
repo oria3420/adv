@@ -7,9 +7,6 @@
 
 #include "HybridAnomalyDetector.h"
 
-HybridAnomalyDetector::HybridAnomalyDetector() {
-
-}
 
 HybridAnomalyDetector::~HybridAnomalyDetector() {
 
@@ -27,7 +24,7 @@ Point **vecToArray(vector<Point> vec) {
 void
 HybridAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints) {
     SimpleAnomalyDetector::addCorrelatedFeatures(ts, i, c, m, vecPoints);
-    if (m > 0.5 && m < 0.9) {
+    if (m > 0.5 && m < threshold) {
         Point **arrPoints = vecToArray(vecPoints);
         Circle circle = findMinCircle(arrPoints, vecPoints.size());
         correlatedFeatures corrf;
@@ -47,9 +44,9 @@ HybridAnomalyDetector::addCorrelatedFeatures(const TimeSeries &ts, long i, long 
 
 bool HybridAnomalyDetector::isAnomaly(Point p, correlatedFeatures c) {
     Point center = Point(c.centerX, c.centerY);
-    if (c.corrlation >= 0.9 && SimpleAnomalyDetector::isAnomaly(p, c)) {
+    if (c.corrlation >= threshold && SimpleAnomalyDetector::isAnomaly(p, c)) {
         return true;
-    } else if (c.corrlation > 0.5 && c.corrlation < 0.9 && distance(p, center) > c.threshold) {
+    } else if (c.corrlation > 0.5 && c.corrlation < threshold && distance(p, center) > c.threshold) {
         return true;
     }
     return false;
