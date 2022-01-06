@@ -14,7 +14,6 @@ CLI::CLI(DefaultIO* dio) {
 void CLI::start(){
     commonDetails info;
     int choice=0;
-    int indexCheck=1;
     while(choice<5){
         dio->write("Welcome to the Anomaly Detection Server.\n");
         dio->write("Please choose an option:\n");

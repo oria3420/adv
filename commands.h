@@ -19,7 +19,7 @@
 using namespace std;
 
 struct commonDetails {
-    int numOfRows;
+    int numOfRows=0;
     float threshold = 0.9;
     vector<AnomalyReport> ar;
     vector<pair<long, long>> mergedAnomlies;
@@ -113,6 +113,8 @@ public:
     DetectAnomalies(DefaultIO *dio) : Command(dio, "detect anomalies") {}
 
     void execute(commonDetails* info) {
+        info->ar.clear();
+        info->mergedAnomlies.clear();
         TimeSeries train("anomalyTrain.csv");
         HybridAnomalyDetector hybridDetect(info->threshold);
         hybridDetect.learnNormal(train);
@@ -120,6 +122,21 @@ public:
         TimeSeries test("anomalyTest.csv");
         dio->write("anomaly detection complete.\n");
         info->ar = hybridDetect.detect(test);
+        mergeAnomolies(info);
+    }
+
+    void mergeAnomolies(commonDetails* info) {
+        info->mergedAnomlies.emplace_back(info->ar.at(0).timeStep, info->ar.at(0).timeStep);
+        for (int i = 1; i < info->ar.size(); i++) {
+            AnomalyReport* prev = &info->ar.at(i - 1);
+            AnomalyReport* current = &info->ar.at(i);
+            if (prev->timeStep + 1 == current->timeStep && prev->description == current->description) {
+                int index = info->mergedAnomlies.size();
+                info->mergedAnomlies.at(index-1).second = current->timeStep;
+            } else {
+                info->mergedAnomlies.emplace_back(current->timeStep, current->timeStep);
+            }
+        }
     }
 };
 
@@ -146,7 +163,6 @@ public:
     AnalyzeResults(DefaultIO *dio) : Command(dio, "upload anomalies and analyze results") {}
 
     void execute(commonDetails* info) {
-        mergeAnomolies(info);
         dio->write("Please upload your local anomalies file.\n");
         string line = dio->read();
         long n = info->numOfRows;
@@ -160,33 +176,20 @@ public:
         analyze(info);
         dio->write("Upload complete.\n");
         dio->write("True Positive Rate: ");
-        float tpr=((int)(1000.0*TP/P))/1000.0f;
-        float fpr=((int)(1000.0*FP/N))/1000.0f;
-        dio->write(tpr);
+
+        float truePositiveRate = (1000*TP/P)/1000.0;
+        float falsePositiveRate =(1000*FP/N)/1000.0;
+
+        dio->write(truePositiveRate);
         dio->write("\n");
         dio->write("False Positive Rate: ");
-        dio->write(fpr);
+        dio->write(falsePositiveRate);
         dio->write("\n");
         N = 0;
         TP = 0;
         FP = 0;
         P = 0;
         timeSteps.clear();
-        info->mergedAnomlies.clear();
-    }
-
-    void mergeAnomolies(commonDetails* info) {
-        info->mergedAnomlies.emplace_back(info->ar.at(0).timeStep, info->ar.at(0).timeStep);
-        for (int i = 1; i < info->ar.size(); i++) {
-            AnomalyReport prev = info->ar.at(i - 1);
-            AnomalyReport current = info->ar.at(i);
-            if (prev.timeStep + 1 == current.timeStep && prev.description == current.description) {
-                int index = info->mergedAnomlies.size();
-                info->mergedAnomlies.at(index-1).second = current.timeStep;
-            } else {
-                info->mergedAnomlies.emplace_back(current.timeStep, current.timeStep);
-            }
-        }
     }
 
     void analyze(commonDetails* info) {
