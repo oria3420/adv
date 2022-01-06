@@ -14,8 +14,7 @@ CLI::CLI(DefaultIO* dio) {
 void CLI::start(){
     commonDetails info;
     int choice=0;
-    int indexCheck=1;
-    while(choice<5){
+    while(choice!=5){
         dio->write("Welcome to the Anomaly Detection Server.\n");
         dio->write("Please choose an option:\n");
         dio->write("1.upload a time series csv file\n"
@@ -25,7 +24,7 @@ void CLI::start(){
                    "5.upload anomalies and analyze results\n"
                    "6.exit\n");
         string input = dio->read();
-        choice = stoi(input)-1;
+        choice = input[0]-'0'-1;
         if(choice >=0 && choice <commandsVec.size()){
             commandsVec.at(choice)->execute(&info);
         }
@@ -34,6 +33,9 @@ void CLI::start(){
 
 
 CLI::~CLI() {
+    for(auto & i : commandsVec){
+        delete i;
+    }
 }
 
 

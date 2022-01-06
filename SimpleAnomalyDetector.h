@@ -25,7 +25,7 @@ protected:
     vector<correlatedFeatures> cf;
     float threshold;
 public:
-    SimpleAnomalyDetector(float threshold): threshold(threshold){}
+    SimpleAnomalyDetector();
 
     virtual ~SimpleAnomalyDetector();
 

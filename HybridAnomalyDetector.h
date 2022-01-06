@@ -8,13 +8,17 @@
 
 class HybridAnomalyDetector : public SimpleAnomalyDetector {
 public:
-    HybridAnomalyDetector(float threshold): SimpleAnomalyDetector(threshold){}
+    HybridAnomalyDetector(): SimpleAnomalyDetector(){}
 
     virtual ~HybridAnomalyDetector();
 
     virtual void addCorrelatedFeatures(const TimeSeries &ts, long i, long c, float m, vector<Point> vecPoints);
 
     virtual bool isAnomaly(Point p, correlatedFeatures c);
+
+    void setCorr(float threshold){
+        this->threshold=threshold;
+    }
 
 };
 

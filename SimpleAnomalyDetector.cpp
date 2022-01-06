@@ -9,6 +9,10 @@
 #include "anomaly_detection_util.h"
 #include "AnomalyDetector.h"
 
+SimpleAnomalyDetector::SimpleAnomalyDetector() {
+    threshold=0.9;
+}
+
 SimpleAnomalyDetector::~SimpleAnomalyDetector() {
 
 }
